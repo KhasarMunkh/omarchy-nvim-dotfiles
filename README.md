@@ -1,22 +1,31 @@
 # Neovim Configuration
 
-A feature-rich Neovim configuration with LSP, debugging, testing, and more. Supports multiple languages including JavaScript/TypeScript, Python, Go, C#, and others.
+A feature-rich Neovim configuration with LSP, debugging, testing, and more. Supports multiple languages including JavaScript/TypeScript, Python, Go, C#, Rust, and others.
+
+**Note**: This config uses **Mason** to install LSP servers, formatters, linters, and debug adapters directly from Neovim.
 
 ## Prerequisites
 
-### Required
+### System Packages (Arch Linux/OmArchy)
 
-- **Neovim** >= 0.9.0 (recommend 0.10+)
-- **Git**
-- **Node.js** and **npm** (for many LSPs and formatters)
-- **Python 3** with pip
-- **A C compiler** (gcc/clang) for Telescope fzf-native
+```bash
+# Essential build tools (required for Mason and Telescope)
+sudo pacman -S base-devel
 
-### Optional (Language-Specific)
+# Core dependencies
+sudo pacman -S git curl unzip wget tar gzip
+sudo pacman -S neovim           # Neovim >= 0.9.0 (recommend 0.10+)
+sudo pacman -S nodejs npm       # For many LSPs and formatters
+sudo pacman -S python python-pip
 
-- **Go** - for gopls, delve debugger, and Go formatters
-- **.NET SDK** - for C# support (Roslyn LSP, csharpier)
-- **Rust toolchain** - if working with Rust projects
+# Optional: Language-specific toolchains
+sudo pacman -S go               # For Go development
+sudo pacman -S rust rust-analyzer # For Rust development
+sudo pacman -S dotnet-sdk       # For C# development
+sudo pacman -S clang            # For C/C++ development
+```
+
+**Alternative**: You can install most LSPs/formatters via Mason instead of pacman. Mason installs everything to `~/.local/share/nvim/mason/` without requiring root.
 
 ## Installation
 
@@ -45,7 +54,9 @@ On first launch:
 - This may take a few minutes - let it complete
 - You may see some error messages initially - this is normal
 
-### 4. Install Language Servers
+### 4. Install Language Servers via Mason
+
+**Mason** is a Neovim package manager that installs LSP servers, formatters, linters, and debuggers.
 
 Once Neovim loads, open Mason:
 
@@ -53,38 +64,39 @@ Once Neovim loads, open Mason:
 :Mason
 ```
 
-The following should auto-install (configured in `lua/plugins/lsp-config.lua`):
-- lua_ls
-- ts_ls (TypeScript/JavaScript)
-- gopls (Go)
-- tailwindcss
-- emmet_language_server
-- eslint
-- html
+The following **auto-install** on first launch (configured in `lua/plugins/lsp-config.lua`):
+- `lua_ls` - Lua
+- `ts_ls` - TypeScript/JavaScript
+- `gopls` - Go
+- `tailwindcss` - Tailwind CSS
+- `emmet_language_server` - HTML/CSS
+- `eslint` - JavaScript/TypeScript linter
+- `html` - HTML
 
-**Additional manual installs** (in Mason):
-- Press `i` to install packages
-- Search for and install:
-  - `pyright` (Python)
-  - `clangd` (C/C++)
-  - `prismals` (Prisma)
+**Additional LSPs to install manually** (in Mason UI):
+- Press `/` to search, then `i` to install:
+  - `pyright` - Python LSP
+  - `clangd` - C/C++ LSP (or use system package)
+  - `rust-analyzer` - Rust LSP (or use system package)
+  - `prismals` - Prisma ORM
   - Any other language servers you need
 
 ### 5. Install Formatters & Linters
 
-In Mason, also install these tools (used by none-ls):
+**Option A: Via Mason (Recommended)**
 
-**JavaScript/TypeScript:**
-```bash
-npm install -g @fsouza/prettierd
-```
+Open Mason (`:Mason`), search and install:
+- `stylua` - Lua formatter
+- `prettierd` - JavaScript/TypeScript/JSON/Markdown formatter
+- `clang-format` - C/C++ formatter
 
-**Lua:**
-- Search for `stylua` in Mason and install
+**Option B: Via Language Package Managers**
+
+Some tools must be installed via their language's package manager:
 
 **Python:**
 ```bash
-pip install ruff
+pip install ruff  # Formatter + linter
 ```
 
 **Go:**
@@ -99,24 +111,29 @@ go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 dotnet tool install -g csharpier
 ```
 
-**C/C++:**
-- Search for `clang-format` in Mason and install
+**Rust:**
+- No additional tools needed - `rustfmt` and `clippy` come with Rust toolchain
 
-### 6. Install Debug Adapters (Optional)
+**JavaScript/TypeScript (alternative to Mason):**
+```bash
+npm install -g @fsouza/prettierd
+```
 
-These should auto-install via mason-nvim-dap. Check with:
+### 6. Install Debug Adapters via Mason (Optional)
+
+Debug adapters (DAP) **auto-install** via `mason-nvim-dap`. Verify with:
 
 ```vim
 :Mason
 ```
 
-Look for:
-- `delve` (Go debugger)
-- `js-debug-adapter` (JavaScript/TypeScript)
-- `debugpy` (Python)
-- `codelldb` (C/C++/Rust)
+These should be installed automatically:
+- `delve` - Go debugger
+- `js-debug-adapter` - JavaScript/TypeScript debugger
+- `debugpy` - Python debugger
+- `codelldb` - C/C++/Rust debugger
 
-If missing, install them manually in Mason.
+If missing, search and install them manually in Mason (press `/` to search, `i` to install).
 
 ## Post-Installation
 
