@@ -1,40 +1,5 @@
-# Neovim plugin manager - lazy.nvim will install these on first launch
-plugin/
-
-# Temporary files
-*.swp
-*.swo
-*.swn
-*.bak
-*.tmp
-*~
-[._]*.un~
-
-# macOS
+old_nvim/
+lsp/
+*.md
+test.*
 .DS_Store
-.AppleDouble
-.LSOverride
-._*
-
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# Linux
-.directory
-
-# Spell files (generated at runtime)
-*.spl
-*.sug
-
-# Session files
-Session.vim
-.session
-
-# Log files
-*.log
-.nvimlog
-
-# Note: lazy-lock.json is INCLUDED so others get the same plugin versions
-# Note: .luarc.json files are INCLUDED as part of the configuration
