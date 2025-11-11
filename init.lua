@@ -33,10 +33,38 @@ map('n', '<C-h>', '<cmd>Pick help<cr>', { desc = 'Find help' })
 map('n', '<leader>fg', '<cmd>Pick grep_live<cr>', { desc = 'Live grep' })
 map('n', '<CR>', 'm`o<Esc>``') -- Enter insert mode below the current line
 
-vim.keymap.set('n', '<C-d>', '<C-d>zz')
-vim.keymap.set('n', '<C-u>', '<C-u>zz')
-vim.keymap.set('n', '<C-e>', '<C-e>j')
-vim.keymap.set('n', '<C-y>', '<C-y>k')
+map('n', '<C-d>', '<C-d>zz')
+map('n', '<C-u>', '<C-u>zz')
+map('n', '<C-e>', '<C-e>j')
+map('n', '<C-y>', '<C-y>k')
+
+--map('n', 'K', vim.lsp.buf.hover, { desc = 'LSP hover' })
+map('n', '<leader>gd', vim.lsp.buf.definition, { desc = 'Go to definition' })
+map('n', '<leader>gi', vim.lsp.buf.implementation, { desc = 'Go to implementation' })
+map('n', '<leader>gr', vim.lsp.buf.references, { desc = 'Find references' })
+map('n', '<leader>ca', vim.lsp.buf.code_action, { desc = 'Code actions' })
+map('n', '<space>rn', vim.lsp.buf.rename, { desc = 'Rename symbol' })
+map('n', 'K', vim.lsp.buf.hover, { desc = 'LSP hover' })
+map('n', '<leader>f', vim.lsp.buf.format, { desc = 'Format buffer' })
+
+-- Quickfix navigation
+map('n', '<M-j>', '<cmd>cnext<CR>', { desc = 'Next in quickfix' })
+map('n', '<M-k>', '<cmd>cprev<CR>', { desc = 'Prev in quickfix' })
+
+-- Copilot toggle function
+vim.g.copilot_enabled = true
+function ToggleCopilot()
+    if vim.g.copilot_enabled then
+        vim.cmd("Copilot disable")
+        vim.g.copilot_enabled = false
+        vim.notify("🛑 Copilot disabled", vim.log.levels.INFO)
+    else
+        vim.cmd("Copilot enable")
+        vim.g.copilot_enabled = true
+        vim.notify("✅ Copilot enabled", vim.log.levels.INFO)
+    end
+end
+map('n', '<leader>cp', ToggleCopilot, { desc = 'Toggle Copilot' })
 
 vim.pack.add({
     { src = "https://github.com/vague2k/vague.nvim" },              -- colorscheme
@@ -45,15 +73,128 @@ vim.pack.add({
     { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
     { src = "https://github.com/HiPhish/rainbow-delimiters.nvim" }, -- rainbow brackets
     { src = "https://github.com/mason-org/mason.nvim" },            -- LSP installer
+    { src = "https://github.com/neovim/nvim-lspconfig" },           -- LSP configurations
+
+    -- Completion & Snippets
+    { src = "https://github.com/hrsh7th/nvim-cmp" },                -- Completion engine
+    { src = "https://github.com/hrsh7th/cmp-nvim-lsp" },            -- LSP completion source
+    { src = "https://github.com/hrsh7th/cmp-buffer" },              -- Buffer completion source
+    { src = "https://github.com/hrsh7th/cmp-path" },                -- Path completion source
+    { src = "https://github.com/L3MON4D3/LuaSnip" },                -- Snippet engine
+    { src = "https://github.com/saadparwaiz1/cmp_luasnip" },        -- LuaSnip completion source
+    { src = "https://github.com/rafamadriz/friendly-snippets" },    -- Snippet collection
+    { src = "https://github.com/roobert/tailwindcss-colorizer-cmp.nvim" }, -- Tailwind colors in completion
+
+    -- GitHub Copilot
+    { src = "https://github.com/github/copilot.vim" },              -- GitHub Copilot AI completion
 })
 require "mason".setup()
 require 'mini.icons'.setup()
 require 'mini.pick'.setup()
+
+-- mini.surround - Surround text objects with quotes, brackets, etc.
+require('mini.surround').setup({
+    mappings = {
+        add = 'sa',            -- Add surrounding in Normal and Visual modes
+        delete = 'sd',         -- Delete surrounding
+        find = 'sf',           -- Find surrounding (to the right)
+        find_left = 'sF',      -- Find surrounding (to the left)
+        highlight = 'sh',      -- Highlight surrounding
+        replace = 'sr',        -- Replace surrounding
+        update_n_lines = 'sn', -- Update `n_lines`
+        suffix_last = 'l',     -- Suffix to search with "prev" method
+        suffix_next = 'n',     -- Suffix to search with "next" method
+    },
+    n_lines = 20,
+    respect_selection_type = false,
+    search_method = 'cover',
+    highlight_duration = 500,
+})
+
+-- mini.splitjoin - Split/join arguments, arrays, etc.
+require('mini.splitjoin').setup({
+    mappings = { toggle = "" }, -- Disable default toggle mapping
+})
+-- Custom keybindings for split/join
+map({ "n", "x" }, "sj", function()
+    require('mini.splitjoin').join()
+end, { desc = "Join arguments" })
+
+map({ "n", "x" }, "sk", function()
+    require('mini.splitjoin').split()
+end, { desc = "Split arguments" })
+
 require "oil".setup({
+    skip_confirm_for_simple_edits = true,
     keymaps = {
         ["q"] = "actions.close",
         ["<Esc>"] = "actions.close",
     },
+})
+
+-- Completion setup
+local cmp = require('cmp')
+local luasnip = require('luasnip')
+local tailwind_fmt = require('tailwindcss-colorizer-cmp').formatter
+
+-- Load friendly-snippets
+require("luasnip.loaders.from_vscode").lazy_load()
+
+cmp.setup({
+    snippet = {
+        expand = function(args)
+            luasnip.lsp_expand(args.body)
+        end,
+    },
+    completion = {
+        keyword_length = 1, -- Minimum word length to trigger completion
+    },
+    window = {
+        completion = cmp.config.window.bordered(),
+        documentation = cmp.config.window.bordered(),
+    },
+    performance = {
+        max_view_entries = 10, -- Limit completion menu entries
+    },
+    mapping = cmp.mapping.preset.insert({
+        ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-f>'] = cmp.mapping.scroll_docs(4),
+        ['<C-Space>'] = cmp.mapping.complete(),
+        ['<C-e>'] = cmp.mapping.abort(),
+        ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        -- Tab for next completion item
+        ['<Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+                cmp.select_next_item()
+            elseif luasnip.expand_or_jumpable() then
+                luasnip.expand_or_jump()
+            else
+                fallback()
+            end
+        end, { 'i', 's' }),
+        -- Shift-Tab for previous completion item
+        ['<S-Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+                cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then
+                luasnip.jump(-1)
+            else
+                fallback()
+            end
+        end, { 'i', 's' }),
+    }),
+    formatting = {
+        format = function(entry, item)
+            return tailwind_fmt(entry, item) -- Show Tailwind colors
+        end,
+    },
+    sources = cmp.config.sources({
+        { name = 'nvim_lsp' },
+        { name = 'luasnip' },
+        { name = 'path' },
+    }, {
+        { name = 'buffer' },
+    }),
 })
 
 require "nvim-treesitter.configs".setup({
@@ -107,7 +248,92 @@ vim.g.rainbow_delimiters = {
     },
 }
 
-vim.lsp.enable({ 'lua_ls' })
+-- LSP Configuration (Modern Neovim 0.11+ approach)
+
+-- Add nvim-cmp capabilities to LSP
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+-- Enable LSP servers (uses configs from lsp/ directory or nvim-lspconfig)
+vim.lsp.enable({
+    'lua_ls',
+    'ts_ls',
+    'pyright',
+    'gopls',
+    'cssls',
+    'eslint',
+    'html',
+    'tailwindcss',
+    'clangd',
+    'svelte',
+})
+
+-- Override specific server settings (all inherit capabilities)
+vim.lsp.config['*'] = {
+    capabilities = capabilities,
+}
+vim.lsp.config.pyright = {
+    settings = {
+        python = {
+            analysis = {
+                typeCheckingMode = "basic",
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+            },
+        },
+    },
+}
+
+vim.lsp.config.gopls = {
+    settings = {
+        gopls = {
+            diagnosticsDelay = "500ms",
+            experimentalPostfixCompletions = true,
+        },
+    },
+}
+
+vim.lsp.config.cssls = {
+    settings = {
+        css = { validate = true, lint = { unknownAtRules = "ignore" } },
+        scss = { validate = true, lint = { unknownAtRules = "ignore" } },
+        less = { validate = true, lint = { unknownAtRules = "ignore" } },
+    },
+}
+
+vim.lsp.config.eslint = {
+    settings = {
+        workingDirectory = { mode = "auto" },
+        format = { enable = false },
+        codeAction = { disableRuleComment = { location = "separateLine" } },
+    },
+}
+
+vim.lsp.config.tailwindcss = {
+    filetypes = {
+        "html",
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+        "vue",
+        "svelte",
+    },
+    settings = {
+        tailwindCSS = {
+            classAttributes = { "class", "className" },
+            experimental = {
+                classRegex = {
+                    'class(?:Name)?="([^"]*)"',
+                    "class(?:Name)?=\\{`([^`]*)`\\}",
+                    "clsx\\(([^\\)]*)\\)",
+                    "cn\\(([^\\)]*)\\)",
+                },
+            },
+            colorDecorators = { enable = true },
+        },
+    },
+}
+
 require "vague".setup({ transparent = true })
 vim.cmd("colorscheme vague")
 vim.cmd(":hi statusline guibg=NONE")

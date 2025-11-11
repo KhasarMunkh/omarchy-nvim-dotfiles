@@ -1,5 +1,33 @@
 {
   "plugins": {
+    "LuaSnip": {
+      "rev": "3732756",
+      "src": "https://github.com/L3MON4D3/LuaSnip"
+    },
+    "cmp-buffer": {
+      "rev": "b74fab3",
+      "src": "https://github.com/hrsh7th/cmp-buffer"
+    },
+    "cmp-nvim-lsp": {
+      "rev": "bd5a7d6",
+      "src": "https://github.com/hrsh7th/cmp-nvim-lsp"
+    },
+    "cmp-path": {
+      "rev": "c642487",
+      "src": "https://github.com/hrsh7th/cmp-path"
+    },
+    "cmp_luasnip": {
+      "rev": "98d9cb5",
+      "src": "https://github.com/saadparwaiz1/cmp_luasnip"
+    },
+    "copilot.vim": {
+      "rev": "da369d9",
+      "src": "https://github.com/github/copilot.vim"
+    },
+    "friendly-snippets": {
+      "rev": "572f566",
+      "src": "https://github.com/rafamadriz/friendly-snippets"
+    },
     "mason-lspconfig.nvim": {
       "rev": "d7b5feb",
       "src": "https://github.com/williamboman/mason-lspconfig.nvim"
@@ -16,6 +44,10 @@
       "rev": "08a7220",
       "src": "https://github.com/echasnovski/mini.pick"
     },
+    "nvim-cmp": {
+      "rev": "106c4bc",
+      "src": "https://github.com/hrsh7th/nvim-cmp"
+    },
     "nvim-lspconfig": {
       "rev": "2010fc6",
       "src": "https://github.com/neovim/nvim-lspconfig"
@@ -31,6 +63,10 @@
     "rainbow-delimiters.nvim": {
       "rev": "8aafe2c",
       "src": "https://github.com/HiPhish/rainbow-delimiters.nvim"
+    },
+    "tailwindcss-colorizer-cmp.nvim": {
+      "rev": "3d3cd95",
+      "src": "https://github.com/roobert/tailwindcss-colorizer-cmp.nvim"
     },
     "vague.nvim": {
       "rev": "dba2805",
