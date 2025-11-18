@@ -18,6 +18,14 @@ vim.o.undofile = true -- Persistent undo history
 vim.o.undodir = vim.fn.stdpath("cache") .. "/undo" -- Store in cache dir
 
 local map = vim.keymap.set
+
+-- map ; to :
+map("n", ";", ":", { noremap = true })
+map("v", ";", ":", { noremap = true })
+-- Easy escape from insert mode
+map('i', 'jk', '<Esc>', { noremap = true })
+-- noremap means that the mapping won't be recursive(i.e., it won't trigger other mappings)
+
 --map('n', '<leader>e', ":Oil<CR>")
 map("n", "<leader>e", "<CMD>Oil --float<CR>", { desc = "Oil floating" })
 map("n", "<C-p>", "<cmd>Pick files<cr>", { desc = "Find files" })
