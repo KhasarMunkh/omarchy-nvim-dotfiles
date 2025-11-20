@@ -79,6 +79,7 @@ vim.pack.add({
 	{ src = "https://github.com/vague2k/vague.nvim" }, -- colorscheme
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" }, -- statusline
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" }, -- git signs in gutter
+	{ src = "http://github.com/shortcuts/no-neck-pain.nvim" }, -- focus mode(centered buffer)
 	{ src = "https://github.com/catppuccin/nvim" }, -- Catppuccin colorscheme
 	{ src = "https://github.com/stevearc/oil.nvim" }, -- file explorer
 	{ src = "https://github.com/echasnovski/mini.nvim" }, -- mini.pick (and other mini modules)
@@ -109,6 +110,7 @@ require("mini.icons").setup()
 require("mini.pick").setup()
 require("plugins.lualine")
 require("plugins.gitsigns")
+require("plugins.no-neck-pain")
 
 -- mini.surround - Surround text objects with quotes, brackets, etc.
 require("mini.surround").setup({

@@ -56,6 +56,10 @@
       "rev": "08a7220",
       "src": "https://github.com/echasnovski/mini.pick"
     },
+    "no-neck-pain.nvim": {
+      "rev": "d871043",
+      "src": "http://github.com/shortcuts/no-neck-pain.nvim"
+    },
     "nvim": {
       "rev": "da33755",
       "src": "https://github.com/catppuccin/nvim"
