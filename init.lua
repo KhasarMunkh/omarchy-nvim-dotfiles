@@ -18,12 +18,15 @@ vim.o.undofile = true -- Persistent undo history
 vim.o.undodir = vim.fn.stdpath("cache") .. "/undo" -- Store in cache dir
 
 local map = vim.keymap.set
-
+map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
+map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+map("n", "<leader>d", vim.diagnostic.open_float, { desc = "Show diagnostic" })
+map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Diagnostic list" })
 -- map ; to :
 map("n", ";", ":", { noremap = true })
 map("v", ";", ":", { noremap = true })
 -- Easy escape from insert mode
-map('i', 'jk', '<Esc>', { noremap = true })
+map("i", "jk", "<Esc>", { noremap = true })
 -- noremap means that the mapping won't be recursive(i.e., it won't trigger other mappings)
 
 --map('n', '<leader>e', ":Oil<CR>")
@@ -75,6 +78,7 @@ map("n", "<leader>cp", ToggleCopilot, { desc = "Toggle Copilot" })
 vim.pack.add({
 	{ src = "https://github.com/vague2k/vague.nvim" }, -- colorscheme
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" }, -- statusline
+	{ src = "https://github.com/lewis6991/gitsigns.nvim" }, -- git signs in gutter
 	{ src = "https://github.com/catppuccin/nvim" }, -- Catppuccin colorscheme
 	{ src = "https://github.com/stevearc/oil.nvim" }, -- file explorer
 	{ src = "https://github.com/echasnovski/mini.nvim" }, -- mini.pick (and other mini modules)
@@ -104,6 +108,7 @@ require("mason").setup()
 require("mini.icons").setup()
 require("mini.pick").setup()
 require("plugins.lualine")
+require("plugins.gitsigns")
 
 -- mini.surround - Surround text objects with quotes, brackets, etc.
 require("mini.surround").setup({
@@ -262,6 +267,19 @@ vim.g.rainbow_delimiters = {
 }
 
 -- LSP Configuration (Modern Neovim 0.11+ approach)
+
+-- Configure diagnostics (inline error messages)
+vim.diagnostic.config({
+	virtual_text = {
+		prefix = "●",
+		spacing = 2,
+		source = "if_many", -- Show source name if multiple LSPs
+	},
+	signs = true, -- Show icons in gutter
+	underline = true, -- Underline errors/warnings
+	update_in_insert = false, -- Don't update while typing
+	severity_sort = true, -- Sort by severity
+})
 
 -- Add nvim-cmp capabilities to LSP
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
