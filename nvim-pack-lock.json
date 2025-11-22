@@ -88,6 +88,10 @@
       "rev": "8aafe2c",
       "src": "https://github.com/HiPhish/rainbow-delimiters.nvim"
     },
+    "render-markdown.nvim": {
+      "rev": "6e0e890",
+      "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
+    },
     "tailwindcss-colorizer-cmp.nvim": {
       "rev": "3d3cd95",
       "src": "https://github.com/roobert/tailwindcss-colorizer-cmp.nvim"

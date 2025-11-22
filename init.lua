@@ -25,8 +25,6 @@ map("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Diagnostic list" })
 -- map ; to :
 map("n", ";", ":", { noremap = true })
 map("v", ";", ":", { noremap = true })
--- Easy escape from insert mode
-map("i", "jk", "<Esc>", { noremap = true })
 -- noremap means that the mapping won't be recursive(i.e., it won't trigger other mappings)
 
 --map('n', '<leader>e', ":Oil<CR>")
@@ -82,6 +80,7 @@ vim.pack.add({
 	{ src = "http://github.com/shortcuts/no-neck-pain.nvim" }, -- focus mode(centered buffer)
 	{ src = "https://github.com/catppuccin/nvim" }, -- Catppuccin colorscheme
 	{ src = "https://github.com/stevearc/oil.nvim" }, -- file explorer
+	{ src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" }, -- markdown renderer
 	{ src = "https://github.com/echasnovski/mini.nvim" }, -- mini.pick (and other mini modules)
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 	{ src = "https://github.com/HiPhish/rainbow-delimiters.nvim" }, -- rainbow brackets
@@ -111,6 +110,7 @@ require("mini.pick").setup()
 require("plugins.lualine")
 require("plugins.gitsigns")
 require("plugins.no-neck-pain")
+require("plugins.render-markdown")
 
 -- mini.surround - Surround text objects with quotes, brackets, etc.
 require("mini.surround").setup({
