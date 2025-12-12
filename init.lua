@@ -17,7 +17,10 @@ vim.o.clipboard = "unnamedplus"
 vim.o.undofile = true -- Persistent undo history
 vim.o.undodir = vim.fn.stdpath("cache") .. "/undo" -- Store in cache dir
 
+
 local map = vim.keymap.set
+map({ "n", "v" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true })
+map({ "n", "v" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true })
 map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
 map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 map("n", "<leader>d", vim.diagnostic.open_float, { desc = "Show diagnostic" })
@@ -74,6 +77,7 @@ end
 map("n", "<leader>cp", ToggleCopilot, { desc = "Toggle Copilot" })
 
 vim.pack.add({
+    { src = "https://github.com/andrewferrier/wrapping.nvim" },
 	{ src = "https://github.com/vague2k/vague.nvim" }, -- colorscheme
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" }, -- statusline
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" }, -- git signs in gutter
@@ -107,6 +111,8 @@ vim.pack.add({
 require("mason").setup()
 require("mini.icons").setup()
 require("mini.pick").setup()
+require("mini.pairs").setup()
+require("plugins.wrapping")
 require("plugins.lualine")
 require("plugins.gitsigns")
 require("plugins.no-neck-pain")
@@ -151,6 +157,13 @@ require("oil").setup({
 		["<Esc>"] = "actions.close",
 	},
 })
+
+-- Toggle diagnostics command
+vim.api.nvim_create_user_command("ToggleDiagnostics", function()
+  local current = vim.diagnostic.config().virtual_text
+  vim.diagnostic.config({ virtual_text = not current })
+end, { desc = "Toggle inline diagnostics" })
+map("n", "<leader>hd", "<cmd>ToggleDiagnostics<cr>", { desc = "Toggle inline diagnostics" })
 
 -- Completion setup
 local cmp = require("cmp")
@@ -285,6 +298,13 @@ vim.lsp.config["*"] = {
 	capabilities = capabilities,
 }
 vim.lsp.config.pyright = {
+	before_init = function(_, config)
+		-- Auto-detect .venv created by uv
+		local venv = vim.fn.getcwd() .. "/.venv/bin/python"
+		if vim.fn.filereadable(venv) == 1 then
+			config.settings.python.pythonPath = venv
+		end
+	end,
 	settings = {
 		python = {
 			analysis = {
@@ -354,13 +374,13 @@ require("conform").setup({
 		lua = { "stylua" },
 
 		-- JavaScript/TypeScript/Web
-		javascript = { "prettierd", "prettier", stop_after_first = true },
-		typescript = { "prettierd", "prettier", stop_after_first = true },
-		javascriptreact = { "prettierd", "prettier", stop_after_first = true },
-		typescriptreact = { "prettierd", "prettier", stop_after_first = true },
-		css = { "prettierd", "prettier", stop_after_first = true },
-		json = { "prettierd", "prettier", stop_after_first = true },
-		markdown = { "prettierd", "prettier", stop_after_first = true },
+		javascript = { "prettier" },
+		typescript = { "prettier" },
+		html = { "prettier" },
+		javascriptreact = { "prettier" },
+		typescriptreact = { "prettier" },
+		css = { "prettier" },
+		json = { "prettier" },
 
 		-- C#
 		cs = { "csharpier" },
@@ -376,22 +396,21 @@ require("conform").setup({
 		python = { "ruff_format" },
 	},
 	formatters = {
-		prettierd = {
-			env = {
-				PRETTIERD_LOCAL_PRETTIER_ONLY = "1", -- Prefer project prettier if present
-			},
+		["clang-format"] = {
+			prepend_args = { "-style=file", "-fallback-style=LLVM" },
 		},
+        prettier = {
+            extra_args = { "--print-width", "100" }, -- this means 
+            prepend_args = { "--config-precedence", "prefer-file", "--tab-width", "4" },
+        },
 	},
 })
+-- 100 character line width for prettier which looks like:
+----------------------------------------------------------------------------------------------------
 
--- Hook conform into vim.lsp.buf.format() for consistency with old config
-vim.api.nvim_create_autocmd("LspAttach", {
-	callback = function(args)
-		vim.keymap.set("n", "<leader>f", function()
-			require("conform").format({ async = true, lsp_format = "fallback" })
-		end, { buffer = args.buf, desc = "Format buffer" })
-	end,
-})
+vim.keymap.set("n", "<leader>f", function()
+	require("conform").format({ bufnr = 0 })
+end)
 
 -- nvim-lint - Linting (replaces none-ls diagnostics)
 local lint = require("lint")

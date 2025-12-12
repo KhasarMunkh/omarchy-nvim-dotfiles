@@ -99,6 +99,10 @@
     "vague.nvim": {
       "rev": "dba2805",
       "src": "https://github.com/vague2k/vague.nvim"
+    },
+    "wrapping.nvim": {
+      "rev": "bbf1b6e",
+      "src": "https://github.com/andrewferrier/wrapping.nvim"
     }
   }
 }
