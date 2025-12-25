@@ -110,7 +110,22 @@ vim.pack.add({
 })
 require("mason").setup()
 require("mini.icons").setup()
-require("mini.pick").setup()
+require("mini.pick").setup({
+	window = {
+		config = function()
+			local height = math.floor(0.6 * vim.o.lines)
+			local width = math.floor(0.5 * vim.o.columns)
+			return {
+				anchor = "NW",
+				height = height,
+				width = width,
+				row = math.floor(0.5 * (vim.o.lines - height)),
+				col = math.floor(0.5 * (vim.o.columns - width)),
+				border = "rounded",
+			}
+		end,
+	},
+})
 require("mini.pairs").setup()
 require("plugins.wrapping")
 require("plugins.lualine")
@@ -155,6 +170,15 @@ require("oil").setup({
 	keymaps = {
 		["q"] = "actions.close",
 		["<Esc>"] = "actions.close",
+	},
+	float = {
+		padding = 2,
+		max_width = 80,
+		max_height = 30,
+		border = "rounded",
+		win_options = {
+			winblend = 0,
+		},
 	},
 })
 
