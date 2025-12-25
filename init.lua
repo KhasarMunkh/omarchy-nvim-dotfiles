@@ -420,8 +420,8 @@ require("conform").setup({
 		python = { "ruff_format" },
 	},
 	formatters = {
-		["clang-format"] = {
-			prepend_args = { "-style=file", "-fallback-style=LLVM" },
+		clang_format = {
+			prepend_args = { "-style={BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Never}" },
 		},
         prettier = {
             extra_args = { "--print-width", "100" }, -- this means 
