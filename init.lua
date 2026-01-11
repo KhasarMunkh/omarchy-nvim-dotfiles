@@ -1,3 +1,5 @@
+vim.o.scrolloff = 8
+vim.o.sidescrolloff = 8
 vim.o.expandtab = true -- Always insert spaces instead of tabs
 vim.o.tabstop = 4 -- Show existing tab characters as 2 spaces
 vim.o.softtabstop = 4 -- Tab key inserts 2 spaces
@@ -16,7 +18,6 @@ vim.o.swapfile = false
 vim.o.clipboard = "unnamedplus"
 vim.o.undofile = true -- Persistent undo history
 vim.o.undodir = vim.fn.stdpath("cache") .. "/undo" -- Store in cache dir
-
 
 local map = vim.keymap.set
 map({ "n", "v" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true })
@@ -77,36 +78,43 @@ end
 map("n", "<leader>cp", ToggleCopilot, { desc = "Toggle Copilot" })
 
 vim.pack.add({
-    { src = "https://github.com/andrewferrier/wrapping.nvim" },
+	{ src = "https://github.com/andrewferrier/wrapping.nvim" },
 	{ src = "https://github.com/vague2k/vague.nvim" }, -- colorscheme
+	{ src = "https://github.com/deparr/tairiki.nvim" }, -- colorscheme
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" }, -- statusline
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" }, -- git signs in gutter
 	{ src = "http://github.com/shortcuts/no-neck-pain.nvim" }, -- focus mode(centered buffer)
-	{ src = "https://github.com/catppuccin/nvim" }, -- Catppuccin colorscheme
+	{ src = "https://github.com/catppuccin/nvim" }, -- catppuccin colorscheme
+	{ src = "https://github.com/ellisonleao/gruvbox.nvim" }, -- gruvbox colorscheme
+	{ src = "https://github.com/edeneast/nightfox.nvim" }, -- nightfox colorscheme
 	{ src = "https://github.com/stevearc/oil.nvim" }, -- file explorer
-	{ src = "https://github.com/MeanderingProgrammer/render-markdown.nvim" }, -- markdown renderer
+	{ src = "https://github.com/meanderingprogrammer/render-markdown.nvim" }, -- markdown renderer
 	{ src = "https://github.com/echasnovski/mini.nvim" }, -- mini.pick (and other mini modules)
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
-	{ src = "https://github.com/HiPhish/rainbow-delimiters.nvim" }, -- rainbow brackets
-	{ src = "https://github.com/mason-org/mason.nvim" }, -- LSP installer
-	{ src = "https://github.com/neovim/nvim-lspconfig" }, -- LSP configurations
+	{ src = "https://github.com/hiphish/rainbow-delimiters.nvim" }, -- rainbow brackets
+	{ src = "https://github.com/mason-org/mason.nvim" }, -- lsp installer
+	{ src = "https://github.com/neovim/nvim-lspconfig" }, -- lsp configurations
+	{ src = "https://github.com/ray-x/lsp_signature.nvim" }, -- lsp function signature hints
 
-	-- Completion & Snippets
-	{ src = "https://github.com/hrsh7th/nvim-cmp" }, -- Completion engine
-	{ src = "https://github.com/hrsh7th/cmp-nvim-lsp" }, -- LSP completion source
-	{ src = "https://github.com/hrsh7th/cmp-buffer" }, -- Buffer completion source
-	{ src = "https://github.com/hrsh7th/cmp-path" }, -- Path completion source
-	{ src = "https://github.com/L3MON4D3/LuaSnip" }, -- Snippet engine
-	{ src = "https://github.com/saadparwaiz1/cmp_luasnip" }, -- LuaSnip completion source
-	{ src = "https://github.com/rafamadriz/friendly-snippets" }, -- Snippet collection
-	{ src = "https://github.com/roobert/tailwindcss-colorizer-cmp.nvim" }, -- Tailwind colors in completion
+	-- completion & snippets
+	{ src = "https://github.com/hrsh7th/nvim-cmp" }, -- completion engine
+	{ src = "https://github.com/hrsh7th/cmp-nvim-lsp" }, -- lsp completion source
+	{ src = "https://github.com/hrsh7th/cmp-buffer" }, -- buffer completion source
+	{ src = "https://github.com/hrsh7th/cmp-path" }, -- path completion source
+	{ src = "https://github.com/l3mon4d3/luasnip" }, -- snippet engine
+	{ src = "https://github.com/saadparwaiz1/cmp_luasnip" }, -- luasnip completion source
+	{ src = "https://github.com/rafamadriz/friendly-snippets" }, -- snippet collection
+	{ src = "https://github.com/roobert/tailwindcss-colorizer-cmp.nvim" }, -- tailwind colors in completion
 
-	-- GitHub Copilot
-	{ src = "https://github.com/github/copilot.vim" }, -- GitHub Copilot AI completion
+	-- github copilot
+	{ src = "https://github.com/github/copilot.vim" }, -- github copilot ai completion
 
-	-- Formatting & Linting
-	{ src = "https://github.com/stevearc/conform.nvim" }, -- Formatter runner
-	{ src = "https://github.com/mfussenegger/nvim-lint" }, -- Linter runner
+	-- formatting & linting
+	{ src = "https://github.com/stevearc/conform.nvim" }, -- formatter runner
+	{ src = "https://github.com/mfussenegger/nvim-lint" }, -- linter runner
+
+	-- c++ enhancements
+	{ src = "https://github.com/p00f/clangd_extensions.nvim" }, -- clangd extras (type hierarchy, ast, symbol info)
 })
 require("mason").setup()
 require("mini.icons").setup()
@@ -128,10 +136,13 @@ require("mini.pick").setup({
 })
 require("mini.pairs").setup()
 require("plugins.wrapping")
+require("plugins.lsp_signature")
 require("plugins.lualine")
 require("plugins.gitsigns")
 require("plugins.no-neck-pain")
 require("plugins.render-markdown")
+-- require("nightfox").setup()
+-- vim.cmd("colorscheme nightfox")
 
 -- mini.surround - Surround text objects with quotes, brackets, etc.
 require("mini.surround").setup({
@@ -184,8 +195,8 @@ require("oil").setup({
 
 -- Toggle diagnostics command
 vim.api.nvim_create_user_command("ToggleDiagnostics", function()
-  local current = vim.diagnostic.config().virtual_text
-  vim.diagnostic.config({ virtual_text = not current })
+	local current = vim.diagnostic.config().virtual_text
+	vim.diagnostic.config({ virtual_text = not current })
 end, { desc = "Toggle inline diagnostics" })
 map("n", "<leader>hd", "<cmd>ToggleDiagnostics<cr>", { desc = "Toggle inline diagnostics" })
 
@@ -391,6 +402,69 @@ vim.lsp.config.tailwindcss = {
 	},
 }
 
+vim.lsp.config.clangd = {
+	cmd = {
+		"clangd",
+		"--background-index",
+		"--compile-commands-dir=build", -- specify compile_commands.json location if not in root
+		"--clang-tidy",
+		"--header-insertion=iwyu",
+		"--completion-style=detailed",
+		-- "--function-arg-placeholders",
+		"--fallback-style=LLVM",
+		"--all-scopes-completion", -- Show all possible completions
+		"--cross-file-rename", -- Enable cross-file rename refactoring
+		"--suggest-missing-includes",
+		"--pch-storage=memory",
+		-- "--enable-config", -- Use .clangd config files
+		-- "--log=error", -- Less noise, this
+	},
+	init_options = {
+		-- usePlaceholders = true,
+		completeUnimported = true,
+		clangdFileStatus = true,
+	},
+}
+
+-- -- clangd_extensions - Enhanced C++ support
+-- require("clangd_extensions").setup({
+-- 	ast = {
+-- 		role_icons = {
+-- 			type = "T",
+-- 			declaration = "D",
+-- 			expression = "E",
+-- 			statement = ";",
+-- 			specifier = "S",
+-- 		},
+-- 		kind_icons = {
+-- 			Compound = "+",
+-- 			Recovery = "~",
+-- 			TranslationUnit = "U",
+-- 			PackExpansion = "<",
+-- 			TemplateTypeParm = "T",
+-- 			TemplateTemplateParm = "T",
+-- 			TemplateParamObject = "T",
+-- 		},
+-- 	},
+-- 	memory_usage = { border = "rounded" },
+-- 	symbol_info = { border = "rounded" },
+-- })
+
+-- Enable inlay hints for all LSPs that support them
+-- vim.api.nvim_create_autocmd("LspAttach", {
+-- 	callback = function(args)
+-- 		local client = vim.lsp.get_client_by_id(args.data.client_id)
+-- 		if client and client.server_capabilities.inlayHintProvider then
+-- 			vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+-- 		end
+-- 	end,
+-- })
+
+-- Toggle inlay hints
+map("n", "<leader>ih", function()
+	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end, { desc = "Toggle inlay hints" })
+
 -- Conform.nvim - Formatting (replaces none-ls formatters)
 require("conform").setup({
 	formatters_by_ft = {
@@ -423,10 +497,10 @@ require("conform").setup({
 		clang_format = {
 			prepend_args = { "-style={BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Never}" },
 		},
-        prettier = {
-            extra_args = { "--print-width", "100" }, -- this means 
-            prepend_args = { "--config-precedence", "prefer-file", "--tab-width", "4" },
-        },
+		prettier = {
+			extra_args = { "--print-width", "100" }, -- this means
+			prepend_args = { "--config-precedence", "prefer-file", "--tab-width", "4" },
+		},
 	},
 })
 -- 100 character line width for prettier which looks like:
@@ -450,8 +524,8 @@ vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter" }, {
 		lint.try_lint()
 	end,
 })
-
-require("vague").setup({ transparent = true })
-vim.cmd("colorscheme catppuccin-macchiato")
---vim.cmd("colorscheme vague")
+-- require("vague").setup({ transparent = true })
+-- vim.cmd("colorscheme catppuccin-macchiato")
+vim.cmd("colorscheme tairiki-dimmed")
+-- vim.cmd([[colorscheme gruvbox]])
 vim.cmd(":hi statusline guibg=NONE")

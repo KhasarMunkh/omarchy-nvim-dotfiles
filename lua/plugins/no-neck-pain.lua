@@ -5,11 +5,11 @@ require("no-neck-pain").setup({
 		enableOnTabEnter = false, -- Don't auto-enable when entering tab
 	},
 	buffers = {
-		colors = {
-			-- Use colorscheme background for side buffers
-			background = "catppuccin-frappe",
-            blend = -0.2,
-		},
+		-- colors = {
+		-- 	-- Use colorscheme background for side buffers
+		-- 	background = "catppuccin-frappe",
+		--           blend = -0.2,
+		-- },
 		bo = {
 			filetype = "md",
 		},

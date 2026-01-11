@@ -4,6 +4,10 @@
       "rev": "3732756",
       "src": "https://github.com/L3MON4D3/LuaSnip"
     },
+    "clangd_extensions.nvim": {
+      "rev": "6fd7f12",
+      "src": "https://github.com/p00f/clangd_extensions.nvim"
+    },
     "cmp-buffer": {
       "rev": "b74fab3",
       "src": "https://github.com/hrsh7th/cmp-buffer"
@@ -36,9 +40,21 @@
       "rev": "cdafc32",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
+    "gruvbox.nvim": {
+      "rev": "5e0a460",
+      "src": "https://github.com/ellisonleao/gruvbox.nvim"
+    },
+    "lsp_signature.nvim": {
+      "rev": "7d3bb0a",
+      "src": "https://github.com/ray-x/lsp_signature.nvim"
+    },
     "lualine.nvim": {
       "rev": "3946f01",
       "src": "https://github.com/nvim-lualine/lualine.nvim"
+    },
+    "luasnip": {
+      "rev": "3732756",
+      "src": "https://github.com/l3mon4d3/luasnip"
     },
     "mason-lspconfig.nvim": {
       "rev": "d7b5feb",
@@ -55,6 +71,14 @@
     "mini.pick": {
       "rev": "08a7220",
       "src": "https://github.com/echasnovski/mini.pick"
+    },
+    "nightfall.nvim": {
+      "rev": "1eed62c",
+      "src": "https://github.com/2giosangmitom/nightfall.nvim"
+    },
+    "nightfox.nvim": {
+      "rev": "ba47d4b",
+      "src": "https://github.com/EdenEast/nightfox.nvim"
     },
     "no-neck-pain.nvim": {
       "rev": "d871043",
@@ -95,6 +119,10 @@
     "tailwindcss-colorizer-cmp.nvim": {
       "rev": "3d3cd95",
       "src": "https://github.com/roobert/tailwindcss-colorizer-cmp.nvim"
+    },
+    "tairiki.nvim": {
+      "rev": "1dcce98",
+      "src": "https://github.com/deparr/tairiki.nvim"
     },
     "vague.nvim": {
       "rev": "dba2805",
