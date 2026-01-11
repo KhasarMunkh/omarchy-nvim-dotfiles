@@ -25,9 +25,6 @@ local quotes = {
 local function pick(t)
 	return t[math.random(#t)]
 end
-local function Cap(s)
-	return (s:gsub("^%l", string.upper))
-end
 
 -- local footer_line = (quotes[key] and ("— " .. Cap(key) .. ": " .. pick(quotes[key]))) or ""
 local footer_line = (quotes[key] and (pick(quotes[key]))) or ""
