@@ -82,6 +82,7 @@ vim.pack.add({
 	{ src = "https://github.com/vague2k/vague.nvim" }, -- colorscheme
 	{ src = "https://github.com/deparr/tairiki.nvim" }, -- colorscheme
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" }, -- statusline
+	{ src = "https://github.com/nvimdev/dashboard-nvim" }, -- dashboard
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" }, -- git signs in gutter
 	{ src = "http://github.com/shortcuts/no-neck-pain.nvim" }, -- focus mode(centered buffer)
 	{ src = "https://github.com/catppuccin/nvim" }, -- catppuccin colorscheme
@@ -116,6 +117,7 @@ vim.pack.add({
 	-- c++ enhancements
 	{ src = "https://github.com/p00f/clangd_extensions.nvim" }, -- clangd extras (type hierarchy, ast, symbol info)
 })
+require("plugins.dashboard")
 require("mason").setup()
 require("mini.icons").setup()
 require("mini.pick").setup({
