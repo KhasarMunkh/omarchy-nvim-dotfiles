@@ -36,6 +36,10 @@
       "rev": "0775e56",
       "src": "https://github.com/nvimdev/dashboard-nvim"
     },
+    "ethereal.nvim": {
+      "rev": "a0ec733",
+      "src": "https://github.com/bjarneo/ethereal.nvim"
+    },
     "friendly-snippets": {
       "rev": "572f566",
       "src": "https://github.com/rafamadriz/friendly-snippets"
@@ -67,6 +71,10 @@
     "mason.nvim": {
       "rev": "ad7146a",
       "src": "https://github.com/williamboman/mason.nvim"
+    },
+    "matteblack.nvim": {
+      "rev": "a8a039f",
+      "src": "https://github.com/tahayvr/matteblack.nvim"
     },
     "mini.nvim": {
       "rev": "68d4478",
@@ -108,6 +116,10 @@
       "rev": "42fc28ba",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
+    "nvim-ts-autotag": {
+      "rev": "db15f2e",
+      "src": "https://github.com/windwp/nvim-ts-autotag"
+    },
     "oil.nvim": {
       "rev": "7e1cd77",
       "src": "https://github.com/stevearc/oil.nvim"
@@ -127,6 +139,10 @@
     "tairiki.nvim": {
       "rev": "1dcce98",
       "src": "https://github.com/deparr/tairiki.nvim"
+    },
+    "tokyonight.nvim": {
+      "rev": "5da1b76",
+      "src": "https://github.com/folke/tokyonight.nvim"
     },
     "vague.nvim": {
       "rev": "dba2805",

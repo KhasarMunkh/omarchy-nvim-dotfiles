@@ -26,7 +26,7 @@ local function pick(t)
 	return t[math.random(#t)]
 end
 
--- local footer_line = (quotes[key] and ("— " .. Cap(key) .. ": " .. pick(quotes[key]))) or ""
+local base_key = key:match("^(%w+)") -- strips _2, _wano, etc.
 local footer_line = (quotes[key] and (pick(quotes[key]))) or ""
 
 require("dashboard").setup({

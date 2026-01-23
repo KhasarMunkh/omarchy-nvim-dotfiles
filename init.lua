@@ -1,9 +1,13 @@
 vim.o.scrolloff = 8
 vim.o.sidescrolloff = 8
 vim.o.expandtab = true -- Always insert spaces instead of tabs
-vim.o.tabstop = 4 -- Show existing tab characters as 2 spaces
-vim.o.softtabstop = 4 -- Tab key inserts 2 spaces
-vim.o.shiftwidth = 4 -- Indent by 2 spaces
+-- vim.o.tabstop = 4 -- Show existing tab characters as 2 spaces
+-- vim.o.softtabstop = 4 -- Tab key inserts 2 spaces
+-- vim.o.shiftwidth = 4 -- Indent by 2 spaces
+vim.o.tabstop = 2 -- Show existing tab characters as 2 spaces
+vim.o.softtabstop = 2 -- Tab key inserts 2 spaces
+vim.o.shiftwidth = 2 -- Indent by 2 spaces
+
 vim.o.smartindent = true -- Autoindent new lines
 
 vim.o.winborder = "rounded"
@@ -81,6 +85,10 @@ vim.pack.add({
 	{ src = "https://github.com/andrewferrier/wrapping.nvim" },
 	{ src = "https://github.com/vague2k/vague.nvim" }, -- colorscheme
 	{ src = "https://github.com/deparr/tairiki.nvim" }, -- colorscheme
+	{ src = "https://github.com/bjarneo/ethereal.nvim" }, -- colorscheme
+	{ src = "https://github.com/tahayvr/matteblack.nvim" }, -- colorscheme
+	{ src = "https://github.com/folke/tokyonight.nvim" }, -- colorscheme
+
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" }, -- statusline
 	{ src = "https://github.com/nvimdev/dashboard-nvim" }, -- dashboard
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" }, -- git signs in gutter
@@ -92,6 +100,7 @@ vim.pack.add({
 	{ src = "https://github.com/meanderingprogrammer/render-markdown.nvim" }, -- markdown renderer
 	{ src = "https://github.com/echasnovski/mini.nvim" }, -- mini.pick (and other mini modules)
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
+	{ src = "https://github.com/windwp/nvim-ts-autotag" }, -- auto close/rename html tags
 	{ src = "https://github.com/hiphish/rainbow-delimiters.nvim" }, -- rainbow brackets
 	{ src = "https://github.com/mason-org/mason.nvim" }, -- lsp installer
 	{ src = "https://github.com/neovim/nvim-lspconfig" }, -- lsp configurations
@@ -220,8 +229,14 @@ cmp.setup({
 		keyword_length = 1, -- Minimum word length to trigger completion
 	},
 	window = {
-		completion = cmp.config.window.bordered(),
-		documentation = cmp.config.window.bordered(),
+		completion = {
+			border = "rounded",
+			winhighlight = "Normal:NormalFloat,FloatBorder:NormalFloat,CursorLine:Visual,Search:None",
+		},
+		documentation = {
+			border = "rounded",
+			winhighlight = "Normal:NormalFloat,FloatBorder:NormalFloat,CursorLine:Visual,Search:None",
+		},
 	},
 	performance = {
 		max_view_entries = 10, -- Limit completion menu entries
@@ -270,6 +285,15 @@ require("nvim-treesitter.configs").setup({
 		enable = true,
 		extended_mode = true,
 		max_file_lines = nil,
+	},
+})
+
+-- Auto close/rename HTML tags
+require("nvim-ts-autotag").setup({
+	opts = {
+		enable_close = true, -- Auto close tags
+		enable_rename = true, -- Auto rename pairs
+		enable_close_on_slash = true, -- Auto close on </
 	},
 })
 
@@ -371,6 +395,18 @@ vim.lsp.config.cssls = {
 }
 
 vim.lsp.config.eslint = {
+	filetypes = {
+		"javascript",
+		"javascriptreact",
+		"javascript.jsx",
+		"typescript",
+		"typescriptreact",
+		"typescript.tsx",
+		"vue",
+		"svelte",
+		"astro",
+		"htmlangular",
+	},
 	settings = {
 		workingDirectory = { mode = "auto" },
 		format = { enable = false },
@@ -418,6 +454,7 @@ vim.lsp.config.clangd = {
 		"--cross-file-rename", -- Enable cross-file rename refactoring
 		"--suggest-missing-includes",
 		"--pch-storage=memory",
+		"--header-insertion-decorators", --
 		-- "--enable-config", -- Use .clangd config files
 		-- "--log=error", -- Less noise, this
 	},
@@ -500,8 +537,8 @@ require("conform").setup({
 			prepend_args = { "-style={BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Never}" },
 		},
 		prettier = {
-			extra_args = { "--print-width", "100" }, -- this means
-			prepend_args = { "--config-precedence", "prefer-file", "--tab-width", "4" },
+			extra_args = { "--print-width", "200" }, -- increase to prevent JSX wrapping
+			prepend_args = { "--config-precedence", "prefer-file", "--tab-width", "2" },
 		},
 	},
 })
@@ -528,6 +565,11 @@ vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter" }, {
 })
 -- require("vague").setup({ transparent = true })
 -- vim.cmd("colorscheme catppuccin-macchiato")
-vim.cmd("colorscheme tairiki-dimmed")
+-- vim.cmd("colorscheme tairiki-dimmed")
+vim.cmd("colorscheme tokyonight")
 -- vim.cmd([[colorscheme gruvbox]])
 vim.cmd(":hi statusline guibg=NONE")
+
+-- Fix border background to match floating windows (removes the darker box around borders)
+vim.api.nvim_set_hl(0, "FloatBorder", { link = "NormalFloat" })
+-- vim.api.nvim_set_hl(0, "MiniPickMatchCurrent", { bg = "#3a3a3a", bold = true })
