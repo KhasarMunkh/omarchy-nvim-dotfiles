@@ -1,12 +1,12 @@
 vim.o.scrolloff = 8
 vim.o.sidescrolloff = 8
 vim.o.expandtab = true -- Always insert spaces instead of tabs
--- vim.o.tabstop = 4 -- Show existing tab characters as 2 spaces
--- vim.o.softtabstop = 4 -- Tab key inserts 2 spaces
--- vim.o.shiftwidth = 4 -- Indent by 2 spaces
-vim.o.tabstop = 2 -- Show existing tab characters as 2 spaces
-vim.o.softtabstop = 2 -- Tab key inserts 2 spaces
-vim.o.shiftwidth = 2 -- Indent by 2 spaces
+vim.o.tabstop = 4 -- Show existing tab characters as 2 spaces
+vim.o.softtabstop = 4 -- Tab key inserts 2 spaces
+vim.o.shiftwidth = 4 -- Indent by 2 spaces
+-- vim.o.tabstop = 2 -- Show existing tab characters as 2 spaces
+-- vim.o.softtabstop = 2 -- Tab key inserts 2 spaces
+-- vim.o.shiftwidth = 2 -- Indent by 2 spaces
 
 vim.o.smartindent = true -- Autoindent new lines
 
@@ -89,6 +89,11 @@ vim.pack.add({
 	{ src = "https://github.com/tahayvr/matteblack.nvim" }, -- colorscheme
 	{ src = "https://github.com/folke/tokyonight.nvim" }, -- colorscheme
 
+
+	{ src = "https://github.com/nvim-neo-tree/neo-tree.nvim" }, -- file explorer
+	{ src = "https://github.com/MunifTanjim/nui.nvim" }, -- neo-tree dependency
+	{ src = "https://github.com/nvim-lua/plenary.nvim" }, -- neo-tree dependency
+
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" }, -- statusline
 	{ src = "https://github.com/nvimdev/dashboard-nvim" }, -- dashboard
 	{ src = "https://github.com/lewis6991/gitsigns.nvim" }, -- git signs in gutter
@@ -152,8 +157,20 @@ require("plugins.lualine")
 require("plugins.gitsigns")
 require("plugins.no-neck-pain")
 require("plugins.render-markdown")
--- require("nightfox").setup()
--- vim.cmd("colorscheme nightfox")
+
+-- Neo-tree file explorer
+require("neo-tree").setup({
+	close_if_last_window = true,
+	window = {
+		position = "left",
+		width = 30,
+	},
+	filesystem = {
+		follow_current_file = { enabled = true },
+		use_libuv_file_watcher = true,
+	},
+})
+vim.keymap.set("n", "<leader>t", "<cmd>Neotree toggle<cr>", { desc = "Toggle file tree" })
 
 -- mini.surround - Surround text objects with quotes, brackets, etc.
 require("mini.surround").setup({
@@ -229,14 +246,8 @@ cmp.setup({
 		keyword_length = 1, -- Minimum word length to trigger completion
 	},
 	window = {
-		completion = {
-			border = "rounded",
-			winhighlight = "Normal:NormalFloat,FloatBorder:NormalFloat,CursorLine:Visual,Search:None",
-		},
-		documentation = {
-			border = "rounded",
-			winhighlight = "Normal:NormalFloat,FloatBorder:NormalFloat,CursorLine:Visual,Search:None",
-		},
+		completion = cmp.config.window.bordered(),
+		documentation = cmp.config.window.bordered(),
 	},
 	performance = {
 		max_view_entries = 10, -- Limit completion menu entries
@@ -465,40 +476,6 @@ vim.lsp.config.clangd = {
 	},
 }
 
--- -- clangd_extensions - Enhanced C++ support
--- require("clangd_extensions").setup({
--- 	ast = {
--- 		role_icons = {
--- 			type = "T",
--- 			declaration = "D",
--- 			expression = "E",
--- 			statement = ";",
--- 			specifier = "S",
--- 		},
--- 		kind_icons = {
--- 			Compound = "+",
--- 			Recovery = "~",
--- 			TranslationUnit = "U",
--- 			PackExpansion = "<",
--- 			TemplateTypeParm = "T",
--- 			TemplateTemplateParm = "T",
--- 			TemplateParamObject = "T",
--- 		},
--- 	},
--- 	memory_usage = { border = "rounded" },
--- 	symbol_info = { border = "rounded" },
--- })
-
--- Enable inlay hints for all LSPs that support them
--- vim.api.nvim_create_autocmd("LspAttach", {
--- 	callback = function(args)
--- 		local client = vim.lsp.get_client_by_id(args.data.client_id)
--- 		if client and client.server_capabilities.inlayHintProvider then
--- 			vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
--- 		end
--- 	end,
--- })
-
 -- Toggle inlay hints
 map("n", "<leader>ih", function()
 	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
@@ -538,7 +515,7 @@ require("conform").setup({
 		},
 		prettier = {
 			extra_args = { "--print-width", "200" }, -- increase to prevent JSX wrapping
-			prepend_args = { "--config-precedence", "prefer-file", "--tab-width", "2" },
+			prepend_args = { "--config-precedence", "prefer-file", "--tab-width", "4" },
 		},
 	},
 })
@@ -570,6 +547,15 @@ vim.cmd("colorscheme tokyonight")
 -- vim.cmd([[colorscheme gruvbox]])
 vim.cmd(":hi statusline guibg=NONE")
 
--- Fix border background to match floating windows (removes the darker box around borders)
-vim.api.nvim_set_hl(0, "FloatBorder", { link = "NormalFloat" })
+-- Transparent floating windows
+vim.opt.winblend = 10
+vim.opt.pumblend = 10
+
+local function set_float_transparent()
+	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
+	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "NONE" })
+end
+
+set_float_transparent()
+vim.api.nvim_create_autocmd("ColorScheme", { callback = set_float_transparent })
 -- vim.api.nvim_set_hl(0, "MiniPickMatchCurrent", { bg = "#3a3a3a", bold = true })

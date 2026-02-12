@@ -84,6 +84,10 @@
       "rev": "08a7220",
       "src": "https://github.com/echasnovski/mini.pick"
     },
+    "neo-tree.nvim": {
+      "rev": "1bd8235",
+      "src": "https://github.com/nvim-neo-tree/neo-tree.nvim"
+    },
     "nightfall.nvim": {
       "rev": "1eed62c",
       "src": "https://github.com/2giosangmitom/nightfall.nvim"
@@ -95,6 +99,10 @@
     "no-neck-pain.nvim": {
       "rev": "d871043",
       "src": "http://github.com/shortcuts/no-neck-pain.nvim"
+    },
+    "nui.nvim": {
+      "rev": "de74099",
+      "src": "https://github.com/MunifTanjim/nui.nvim"
     },
     "nvim": {
       "rev": "da33755",
@@ -123,6 +131,10 @@
     "oil.nvim": {
       "rev": "7e1cd77",
       "src": "https://github.com/stevearc/oil.nvim"
+    },
+    "plenary.nvim": {
+      "rev": "b9fd522",
+      "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "rainbow-delimiters.nvim": {
       "rev": "8aafe2c",
