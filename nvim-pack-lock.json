@@ -1,5 +1,9 @@
 {
   "plugins": {
+    "99": {
+      "rev": "96f3682",
+      "src": "https://github.com/ThePrimeagen/99"
+    },
     "LuaSnip": {
       "rev": "3732756",
       "src": "https://github.com/L3MON4D3/LuaSnip"
@@ -51,6 +55,10 @@
     "gruvbox.nvim": {
       "rev": "5e0a460",
       "src": "https://github.com/ellisonleao/gruvbox.nvim"
+    },
+    "kanagawa.nvim": {
+      "rev": "aef7f5c",
+      "src": "https://github.com/rebelot/kanagawa.nvim"
     },
     "lsp_signature.nvim": {
       "rev": "7d3bb0a",

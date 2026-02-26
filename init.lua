@@ -1,3 +1,4 @@
+vim.o.background = "dark" -- set so nvim doesnt change colorscheme when switching between light/dark terminal themes
 vim.o.scrolloff = 8
 vim.o.sidescrolloff = 8
 vim.o.expandtab = true -- Always insert spaces instead of tabs
@@ -88,6 +89,8 @@ vim.pack.add({
 	{ src = "https://github.com/bjarneo/ethereal.nvim" }, -- colorscheme
 	{ src = "https://github.com/tahayvr/matteblack.nvim" }, -- colorscheme
 	{ src = "https://github.com/folke/tokyonight.nvim" }, -- colorscheme
+	{ src = "https://github.com/rebelot/kanagawa.nvim" }, -- colorscheme
+
 
 
 	{ src = "https://github.com/nvim-neo-tree/neo-tree.nvim" }, -- file explorer
@@ -130,6 +133,9 @@ vim.pack.add({
 
 	-- c++ enhancements
 	{ src = "https://github.com/p00f/clangd_extensions.nvim" }, -- clangd extras (type hierarchy, ast, symbol info)
+
+	-- AI agent
+	{ src = "https://github.com/ThePrimeagen/99" }, -- ThePrimeagen's scoped AI agent
 })
 require("plugins.dashboard")
 require("mason").setup()
@@ -157,6 +163,7 @@ require("plugins.lualine")
 require("plugins.gitsigns")
 require("plugins.no-neck-pain")
 require("plugins.render-markdown")
+require("plugins.99")
 
 -- Neo-tree file explorer
 require("neo-tree").setup({
@@ -540,22 +547,10 @@ vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter" }, {
 		lint.try_lint()
 	end,
 })
+
 -- require("vague").setup({ transparent = true })
 -- vim.cmd("colorscheme catppuccin-macchiato")
 -- vim.cmd("colorscheme tairiki-dimmed")
-vim.cmd("colorscheme tokyonight")
--- vim.cmd([[colorscheme gruvbox]])
-vim.cmd(":hi statusline guibg=NONE")
+-- vim.cmd("colorscheme tokyonight-moon")
 
--- Transparent floating windows
-vim.opt.winblend = 10
-vim.opt.pumblend = 10
-
-local function set_float_transparent()
-	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
-	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "NONE" })
-end
-
-set_float_transparent()
-vim.api.nvim_create_autocmd("ColorScheme", { callback = set_float_transparent })
--- vim.api.nvim_set_hl(0, "MiniPickMatchCurrent", { bg = "#3a3a3a", bold = true })
+vim.cmd("colorscheme kanagawa-wave")
