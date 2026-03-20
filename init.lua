@@ -2,9 +2,11 @@ vim.o.background = "dark" -- set so nvim doesnt change colorscheme when switchin
 vim.o.scrolloff = 8
 vim.o.sidescrolloff = 8
 vim.o.expandtab = true -- Always insert spaces instead of tabs
-vim.o.tabstop = 4 -- Show existing tab characters as 2 spaces
-vim.o.softtabstop = 4 -- Tab key inserts 2 spaces
-vim.o.shiftwidth = 4 -- Indent by 2 spaces
+
+vim.o.tabstop = 4 -- Show existing tab characters as 4 spaces
+vim.o.softtabstop = 4 -- Tab key inserts 4 spaces
+vim.o.shiftwidth = 4 -- Indent by 4 spaces
+
 -- vim.o.tabstop = 2 -- Show existing tab characters as 2 spaces
 -- vim.o.softtabstop = 2 -- Tab key inserts 2 spaces
 -- vim.o.shiftwidth = 2 -- Indent by 2 spaces
@@ -90,8 +92,6 @@ vim.pack.add({
 	{ src = "https://github.com/tahayvr/matteblack.nvim" }, -- colorscheme
 	{ src = "https://github.com/folke/tokyonight.nvim" }, -- colorscheme
 	{ src = "https://github.com/rebelot/kanagawa.nvim" }, -- colorscheme
-
-
 
 	{ src = "https://github.com/nvim-neo-tree/neo-tree.nvim" }, -- file explorer
 	{ src = "https://github.com/MunifTanjim/nui.nvim" }, -- neo-tree dependency
@@ -517,8 +517,11 @@ require("conform").setup({
 		python = { "ruff_format" },
 	},
 	formatters = {
+		-- clang_format = {
+		-- 	prepend_args = { "-style={BasedOnStyle: LLVM, IndentWidth: 8, TabWidth: 8, UseTab: Always, ColumnLimit: 100}" },
+		-- },
 		clang_format = {
-			prepend_args = { "-style={BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Never}" },
+			prepend_args = { "-style={BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, ColumnLimit: 100}" },
 		},
 		prettier = {
 			extra_args = { "--print-width", "200" }, -- increase to prevent JSX wrapping

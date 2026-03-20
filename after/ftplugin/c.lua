@@ -1,0 +1,6 @@
+-- seems /home/khasar/.config/nvim/after/ftplugin/c.lua causes cpp files to be wierd!
+--
+-- vim.opt_local.tabstop = 8
+-- vim.opt_local.shiftwidth = 8
+-- vim.opt_local.expandtab = false -- Use tabs, not spaces
+-- vim.opt_local.cindent = true -- Enable C-style indentation
