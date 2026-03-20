@@ -51,13 +51,31 @@ map("n", "<C-h>", "<cmd>Pick help<cr>", { desc = "Find help" })
 map("n", "<leader>fg", "<cmd>Pick grep_live<cr>", { desc = "Live grep" })
 map("n", "<CR>", "m`o<Esc>``") -- Enter insert mode below the current line
 
-map("n", "<C-d>", "<C-d>zz")
-map("n", "<C-u>", "<C-u>zz")
+-- Center cursor after jumping (zz = center, zv = open folds)
+map("n", "<C-d>", "<C-d>zz") -- half page down
+map("n", "<C-u>", "<C-u>zz") -- half page up
 map("n", "<C-e>", "<C-e>j")
 map("n", "<C-y>", "<C-y>k")
+map("n", "n", "nzzzv") -- next search match
+map("n", "N", "Nzzzv") -- prev search match
+map("n", "*", "*zzzv") -- search word under cursor (forward)
+map("n", "#", "#zzzv") -- search word under cursor (backward)
+map("n", "G", "Gzz") -- end of file
+map("n", "gg", "ggzz") -- start of file
+map("n", "%", "%zz") -- matching bracket
+map("n", "{", "{zz") -- prev paragraph
+map("n", "}", "}zz") -- next paragraph
+map("n", "<C-o>", "<C-o>zz") -- jumplist back
+map("n", "<C-i>", "<C-i>zz") -- jumplist forward
 
 --map('n', 'K', vim.lsp.buf.hover, { desc = 'LSP hover' })
-map("n", "<leader>gd", vim.lsp.buf.definition, { desc = "Go to definition" })
+map("n", "<leader>gd", function()
+	vim.lsp.buf.definition()
+	-- defer so the jump completes before centering
+	vim.defer_fn(function()
+		vim.cmd("normal! zz")
+	end, 100)
+end, { desc = "Go to definition" })
 map("n", "<leader>gi", vim.lsp.buf.implementation, { desc = "Go to implementation" })
 map("n", "<leader>gr", vim.lsp.buf.references, { desc = "Find references" })
 map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code actions" })
