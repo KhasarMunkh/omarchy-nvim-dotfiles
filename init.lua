@@ -83,8 +83,76 @@ map("n", "<space>rn", vim.lsp.buf.rename, { desc = "Rename symbol" })
 map("n", "K", vim.lsp.buf.hover, { desc = "LSP hover" })
 
 -- Quickfix navigation
-map("n", "<M-j>", "<cmd>cnext<CR>", { desc = "Next in quickfix" })
-map("n", "<M-k>", "<cmd>cprev<CR>", { desc = "Prev in quickfix" })
+map("n", "<M-j>", "<cmd>cnext<CR>zz", { desc = "Next in quickfix" })
+map("n", "<M-k>", "<cmd>cprev<CR>zz", { desc = "Prev in quickfix" })
+
+
+-- Close quickfix if open, otherwise open it
+map("n", "<leader>k", vim.cmd.cclose, { desc = "Close quickfix list" })
+
+
+-- Compile command (Emacs-style M-x compile)
+-- Prompts for a shell command, runs it async, populates quickfix with errors
+local last_compile_cmd = "make"
+local function compile(cmd)
+	if not cmd or cmd == "" then return end
+	last_compile_cmd = cmd
+	-- Clear quickfix and open it at 1/3 screen height
+	vim.fn.setqflist({}, "r")
+	vim.cmd("copen " .. math.floor(vim.o.lines / 3))
+	vim.fn.setqflist({}, "r", { title = "compiling: " .. cmd })
+
+	local output_lines = {}
+	vim.system(vim.list_extend({ "sh", "-c" }, { cmd }), {
+		stdout = function(_, data)
+			if data then
+				for line in data:gmatch("[^\r\n]+") do
+					table.insert(output_lines, line)
+				end
+			end
+		end,
+		stderr = function(_, data)
+			if data then
+				for line in data:gmatch("[^\r\n]+") do
+					table.insert(output_lines, line)
+				end
+			end
+		end,
+	}, function(result)
+		vim.schedule(function()
+			-- Parse output into quickfix entries using errorformat
+			vim.fn.setqflist({}, "r", {
+				title = cmd,
+				lines = output_lines,
+				efm = vim.o.errorformat,
+			})
+			vim.cmd("copen " .. math.floor(vim.o.lines / 3))
+			-- Scroll to bottom of quickfix to show latest output
+			vim.cmd("cbottom")
+			if result.code == 0 then
+				vim.notify("Compilation finished successfully", vim.log.levels.INFO)
+			else
+				vim.notify("Compilation failed (exit " .. result.code .. ")", vim.log.levels.ERROR)
+			end
+		end)
+	end)
+end
+
+vim.api.nvim_create_user_command("Compile", function(opts)
+	if opts.args ~= "" then
+		compile(opts.args)
+	else
+		vim.ui.input({ prompt = "Compile command: ", default = last_compile_cmd }, compile)
+	end
+end, { nargs = "?", desc = "Run compile command (like Emacs M-x compile)" })
+
+-- Recompile: re-run the last compile command without prompting
+vim.api.nvim_create_user_command("Recompile", function()
+	compile(last_compile_cmd)
+end, { desc = "Re-run last compile command" })
+
+map("n", "<leader>cc", "<cmd>Compile<CR>", { desc = "Compile (prompt)" })
+map("n", "<leader>cr", "<cmd>Recompile<CR>", { desc = "Recompile last" })
 
 -- Copilot toggle function
 vim.g.copilot_enabled = true
@@ -312,6 +380,7 @@ require("nvim-treesitter.configs").setup({
 		"cpp",
 		"html",
 		"css",
+        "java",
 	},
 	sync_install = false,
 	auto_install = true,
@@ -388,6 +457,7 @@ vim.lsp.enable({
 	"tailwindcss",
 	"clangd",
 	"svelte",
+    "jdtls",
 })
 
 -- Override specific server settings (all inherit capabilities)
@@ -539,7 +609,8 @@ require("conform").setup({
 		-- 	prepend_args = { "-style={BasedOnStyle: LLVM, IndentWidth: 8, TabWidth: 8, UseTab: Always, ColumnLimit: 100}" },
 		-- },
 		clang_format = {
-			prepend_args = { "-style={BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, ColumnLimit: 100}" },
+			-- Defer to the project's .clang-format file; fall back to LLVM if none exists.
+			prepend_args = { "-style=file", "--fallback-style=LLVM" },
 		},
 		prettier = {
 			extra_args = { "--print-width", "200" }, -- increase to prevent JSX wrapping
