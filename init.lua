@@ -385,7 +385,10 @@ require("nvim-treesitter.configs").setup({
 	sync_install = false,
 	auto_install = true,
 	highlight = { enable = true },
-	indent = { enable = true },
+	-- Treesitter indent overrides cindent via indentexpr; its C/C++ queries don't
+	-- indent namespace bodies (clang-format NamespaceIndentation: All), so use
+	-- cindent for those filetypes instead (see after/ftplugin/c.lua)
+	indent = { enable = true, disable = { "c", "cpp" } },
 	rainbow = {
 		enable = true,
 		extended_mode = true,
